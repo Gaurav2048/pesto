@@ -1,0 +1,446 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <style>
+    
+        .style_default{
+            height: 60px;
+            width: 60px;
+            background-color: rgba(0, 255, 0, 0.1);
+            color: black;
+            position: relative;
+            border: 1px black solid; 
+            margin: 2px;
+        }
+
+        .style_dim{
+            height: 60px;
+            width: 60px;
+            opacity: 0.2;
+            background-color: rgba(0, 255, 0, 0.1);
+            color: black;
+            border: 1px black solid; 
+            margin: 2px;
+        }
+
+        .style_add{
+            height: 60px;
+            width: 60px;
+            background-color: rgba(0, 255, 0, 0.1);
+            color: black;
+            border: 4px red solid; 
+            margin: 2px;
+        }
+
+
+        .h1_class{
+            color: black;
+            width: 100%;
+            height: 100%;
+            font-size: 14px;
+            text-align:center; 
+            justify-content: center;
+            
+        }
+
+        .style_default_sort{
+            min-height: 60px;
+            width: 60px;
+            background-color: rgba(0, 255, 0, 0.1);
+            color: black;
+            position: relative;
+            border: 2px #dddddd solid; 
+            flex-shrink: inherit;
+            
+         }
+
+         .style_add_sort{
+            min-height: 60px;
+            width: 60px;
+            background-color: rgba(0, 255, 0, 0.1);
+            color: black;
+            border: 2px red solid; 
+           
+        }
+
+    </style>
+
+</head>
+<body >
+    <button id="linear_search" >Linear Search</button>
+    <button id="binary_search" >Binary Search</button>
+   <input id = "size" type="number" min="5" max="100" placeholder="Enter the size of the array" style="min-width: 15%; border: 1px black solid; padding: 5px;" />
+   <input id = "search_value" type="number"  placeholder="Enter the element to search" style="min-width: 15%; border: 1px black solid; padding: 5px; " />
+   <div id="array_holder" style=" display: flex; flex-wrap: wrap; margin-top: 80px; margin-left: 50px; margin-right: 50px;  " ></div>
+    <script>
+        $('#size').change(function(e){
+            generateElement($('#size').val());
+        })
+        var toFind 
+        $('#search_value').change(function(e){
+            toFind = parseInt($('#search_value').val())
+        })
+
+        var a_data = []
+        generateElement(5)
+        function generateElement(desired_length){
+           a_data = []
+        for(var i =0; i<desired_length; i++) {
+            a_data.push(i+i)
+        }
+        console.log(a_data);
+        
+        var holder = document.getElementById('array_holder')
+        holder.innerHTML = ""
+    for(var i =0; i<a_data.length;i=i+1){
+        var element = document.createElement('div')
+        element.classList.add("style_default");
+        var h5 = document.createElement('h5')
+
+        h5.classList.add('h1_class')
+        h5.innerHTML = a_data[i] +'<br/> pos - '+i
+        element.id = 'element_'+i
+        element.appendChild(h5)
+        holder.appendChild(element)
+     }    
+    }
+
+
+    document.getElementById('linear_search').onclick = function(e){
+        
+        var length = a_data.length
+        var count = 0
+
+        function execdata(){
+            var item = document.getElementById('element_'+count)
+            item.classList.remove('style_default')
+            item.classList.add('style_add')
+            
+            setTimeout(()=>{
+             if(toFind===a_data[count]){
+                 alert('element found')
+                return
+             }else {
+                item.classList.remove('style_add')
+                item.classList.add('style_default')
+            }
+            count++
+            console.log(count);
+                 if(count<length){
+                    execdata()
+                  }else {
+                      alert('element not found')
+                  }   
+            }, 600)
+        }
+
+        execdata()   
+         
+    }
+
+    document.getElementById('binary_search').onclick = function(e){
+        var notfound = true
+        var min = 0
+        var mid =0
+        var max = a_data.length-1
+
+        function iterateOver(){
+            var da = document.getElementById('element_'+mid)
+            if(da !== null){
+                da.classList.remove('style_add')
+            }
+            mid = (min+max)/2
+            mid = Math.floor(mid)
+            var item_mid = document.getElementById('element_'+mid)
+            console.log("mid item id"+mid);
+            
+            if(item_mid!==null){
+                item_mid.classList.remove('style_default')
+                item_mid.classList.add('style_add')
+            }
+
+            if(mid===min){
+                console.log(typeof(toFind)+" "+a_data[mid]);
+            if(a_data[mid] === toFind){
+                    
+                    alert('elemet found!')
+                    notfound=false
+                    return
+                }else {
+                    alert('no  element')
+                     console.log("no element");
+                }
+                return
+            }else if(a_data[mid] > toFind){
+                dimOver(mid+1, max)
+                max = mid
+                setTimeout(()=>{
+                    iterateOver()
+                }, 800)
+            }else {
+                dimOver(min,mid-1)
+                min = mid
+                setTimeout(()=>{
+                    iterateOver()
+                }, 800)
+            }
+
+        }
+        function dimOver(first , last){
+            for(var i = first; i<= last ; i++ ){
+                var item = document.getElementById('element_'+i)
+                if(item!==null){
+                    item.classList.remove('style_default')
+                    item.classList.add('style_dim')
+                }
+            }
+        }
+        iterateOver()
+    }
+
+    </script>
+
+<button id="selection_sort" style="margin-top: 100px;" >selection sort</button>
+<button id="bubble_sort" >Bubble sort</button>
+<input id = "size_s" type="number" min="5" max="100" placeholder="Enter the size of the array" style="min-width: 15%; border: 1px black solid; padding: 5px;" />
+
+<div id="unlist_holder" style=" display: flex; flex-shrink: inherit; flex-direction: row; margin-top: 80px; overflow: hidden; width: 100%; margin-left: 50px; margin-right: 50px;  position: absolute; " ></div>
+
+
+<script>
+    var data_array
+    $('#size_s').change(function(e){
+        var length = $('#size_s').val()
+        for (var a=[],i=0;i<parseInt(length);++i) a[i]=i;
+        data_array= shuffle(a)
+        placeElements()
+    })
+
+ function placeElements(){
+    var holder = document.getElementById('unlist_holder')
+    if(holder.hasChildNodes()){
+        holder.innerHTML = ""
+    }
+    for(var i =0; i<data_array.length;i++){
+        var element = document.createElement('div')
+        element.classList.add("style_default_sort");
+        var h5 = document.createElement('h5')
+
+        h5.classList.add('h1_class')
+        h5.innerHTML = data_array[i] +'<br/> pos - '+i
+        element.id = 'sort_'+i
+        element.appendChild(h5)
+        holder.appendChild(element)
+    }    
+ }
+ 
+    function shuffle(array) {
+         var tmp, current, top = array.length;
+                 if(top) while(--top) {
+                    current = Math.floor(Math.random() * (top + 1));
+                    tmp = array[current];
+                    array[current] = array[top];
+                    array[top] = tmp;
+                }
+            return array;
+    }
+    $(document).ready(function(){
+        $('#bubble_sort').click(function(){
+            console.log('dada');
+            var isEnd = false
+            var pos1 = 0
+            var pos2 = 1
+            var savedId ; 
+            var length = data_array.length-2
+          
+            var isSwipping = true
+
+            function bubbleSort(){
+                if(isSwipping===true){
+                    isSwipping = false
+                    attemptSwipe()
+                }else{
+                    alert('sorting complete.')
+                }
+            }
+
+
+            function attemptSwipe (){
+
+                var element_1 = document.getElementById(savedId)
+                if(element_1===null){
+                    element_1 = document.getElementById('sort_'+pos1)
+                }
+                var element_2 = document.getElementById('sort_'+pos2)
+                element_1.style.borderColor = "red";
+                element_2.style.borderColor = "red";
+                
+                
+                if(data_array[pos1]>data_array[pos2]){
+                    isSwipping = true
+                    
+                    var copy_ =   data_array[pos1]
+                    data_array[pos1] = data_array[pos2]
+                    data_array[pos2] = copy_
+
+
+                    moveBlock( element_1 , element_2  )
+                    savedId =  element_1.id
+                }else {
+                    savedId = document.getElementById('sort_'+pos2).id
+                }
+                console.log(savedId);
+                
+                pos1++
+                    pos2++
+                    if(pos1!==length+1){
+                        setTimeout(()=>{
+                            element_1.style.borderColor = "black";
+                            element_2.style.borderColor = "black";
+                            attemptSwipe()
+                            console.log('attemptswipe');
+                        }, 1000)
+                }else{
+                    setTimeout(()=>{
+                            pos1 = 0
+                            pos2 = 1
+                            console.log('bubblesort');
+                            placeElements()
+                            savedId = null
+                            bubbleSort()
+                        }, 1000)
+                }
+            }
+            
+            bubbleSort()
+           
+
+  });
+
+  function moveBlock(div1, div2) {
+  return new Promise((resolve, reject) => {
+    if (!(div1 && div2)) {
+      resolve(true)
+    }
+    let j = 5;
+    let step = 5;
+    let id;
+    let offset1 = div1.offsetLeft;
+    let offset2 = div2.offsetLeft;
+    if (offset1 === offset2) {
+      resolve(true);
+    }
+    id = setInterval(() => {
+      let left1 = parseInt(div1.style.left || 0);
+      let left2 = parseInt(div2.style.left || 0);
+      let right1 = parseInt(div1.style.right || 0);
+      let right2 = parseInt(div2.style.right || 0);
+      let top1 = parseInt(div1.style.top || 0);
+      let top2 = parseInt(div2.style.top || 0);
+      let bottom1 = parseInt(div1.style.bottom || 0);
+      let bottom2 = parseInt(div2.style.bottom || 0);
+      if (!right1) {
+        div1.style.left = (left1 + step) + 'px';
+      } else {
+        div1.style.right = (right1 - step) + 'px';
+      }
+
+      if (!left2) {
+        div2.style.right = (right2 + step) + 'px';
+      } else {
+        div2.style.left = (left2 - step) + 'px';
+      }
+
+      if(top1<top2){
+            div1.style.top = (top1-step)+'px'
+            div2.style.top = (top2+step)+'px'
+      }
+
+      j += 5;
+      // console.log(j)
+      if (div1.offsetLeft >= offset2 || div2.offsetLeft <= offset1) {
+        clearInterval(id);
+        resolve(true)
+      }
+    }, 10);
+  })
+}
+
+
+
+
+  $('#selection_sort').click(function(){
+    
+        var startPos = 0 
+        var currentPos = 0 ; 
+        var swapPosition = startPos ; 
+        var length = data_array.length-1
+        var e2; 
+        var e1 = document.getElementById('sort_'+startPos)
+        e1.style.borderColor = 'red'
+
+       
+
+      function attemptOp(){
+         if(e2!==undefined){
+             e2.style.borderColor = 'black'
+         }
+         currentPos = currentPos+1
+        e2 = document.getElementById('sort_'+currentPos)
+        e2.style.borderColor = 'green'
+         if(data_array[currentPos] < data_array[swapPosition]){
+             swapPosition = currentPos
+             console.log('inside');
+             
+         }
+         if(currentPos!=length){
+             setTimeout(()=>{
+                attemptOp()
+             }, 600)
+         }else{
+
+            console.log(data_array[swapPosition]);
+                moveBlock(e1, document.getElementById('sort_'+swapPosition) )
+            var copy_ =   data_array[startPos]
+            data_array[startPos] = data_array[swapPosition]
+            data_array[swapPosition] = copy_
+
+             
+            
+            
+
+            setTimeout(()=>{
+                startPos++
+             currentPos = startPos
+             swapPosition = startPos
+             e1.style.borderColor = 'black'
+                if(startPos<length)
+             {
+                placeElements()
+                e1 = document.getElementById('sort_'+startPos)
+                e1.style.borderColor = 'red'
+                attemptOp()
+             }else {
+                 console.log(data_array);
+                 placeElements()
+                 alert('sort completed.')
+             }
+            }, 1000)   
+         }
+      }
+
+      attemptOp()
+  })
+
+});
+     
+
+</script>
+
+</body>
+</html>
